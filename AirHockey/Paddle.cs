@@ -10,36 +10,36 @@ public class Paddle
     
     private float _direction;
     
-    private Keyboard.Key _leftMovementButton; 
-    private Keyboard.Key _rightMovementButton; 
+    private Keyboard.Key _upMovementButton; 
+    private Keyboard.Key _downMovementButton; 
     
-    public Paddle(Keyboard.Key leftMovement, Keyboard.Key rightMovement, bool isOnTop)
+    public Paddle(Keyboard.Key upMovement, Keyboard.Key downMovement, bool isRight)
     {
-        _leftMovementButton = leftMovement;
-        _rightMovementButton = rightMovement;
+        _upMovementButton = upMovement;
+        _downMovementButton = downMovement;
 
-        Shape = new(new Vector2f(100, 30));
+        Shape = new(new Vector2f(30, 100));
         Shape.FillColor = Color.Red;
 
-        int y;
+        int x;
         
-        if (isOnTop)
-            y = 200; 
+        if (isRight)
+            x = Game.WIDTH - 200; 
         else
-            y = Game.HEIGHT - 200;
+            x = 200;
         
-        Shape.Position = new Vector2f(Game.WIDTH / 2, y);
+        Shape.Position = new Vector2f(x, Game.HEIGHT / 2f);
     }
     
     public void ProcessInput()
     {
         _direction = 0;
         
-        if (Keyboard.IsKeyPressed(_leftMovementButton))
+        if (Keyboard.IsKeyPressed(_upMovementButton))
         {
             _direction = -1;
         }
-        else if (Keyboard.IsKeyPressed(_rightMovementButton))
+        else if (Keyboard.IsKeyPressed(_downMovementButton))
         {
             _direction = 1;
         }
@@ -47,12 +47,12 @@ public class Paddle
 
     public void DoLogic()
     {
-        Vector2f movementDistance = new Vector2f(_direction, 0);
+        Vector2f movementDistance = new Vector2f(0, _direction);
 
-        float halfOfPaddle = Shape.Size.X / 2;
-        float nextCenterPositionX = Shape.Position.X + movementDistance.X + halfOfPaddle;
+        float halfOfPaddle = Shape.Size.Y / 2;
+        float nextCenterPositionY = Shape.Position.Y + movementDistance.Y + halfOfPaddle;
 
-        if (nextCenterPositionX + halfOfPaddle >= Game.WIDTH || nextCenterPositionX - halfOfPaddle <= 0)
+        if (nextCenterPositionY + halfOfPaddle >= Game.HEIGHT || nextCenterPositionY - halfOfPaddle <= 0)
             return;
         
         Shape.Position += movementDistance;

@@ -5,8 +5,8 @@ namespace Aerohockey;
 
 public class Game
 {
-    public const int WIDTH = 900;
-    public const int HEIGHT = 1600;
+    public const int WIDTH = 1600;
+    public const int HEIGHT = 900;
     
     private RenderWindow _window;
 
@@ -19,7 +19,7 @@ public class Game
         _window = new RenderWindow(new VideoMode(WIDTH, HEIGHT), "Aerohockey");
         _window.Closed += WindowClosed;
         
-        _paddle1 = new(Keyboard.Key.A, Keyboard.Key.D, false);
+        _paddle1 = new(Keyboard.Key.Up, Keyboard.Key.Down, false);
         _paddle2 = new(Keyboard.Key.W, Keyboard.Key.S, true);
         
         Run();
