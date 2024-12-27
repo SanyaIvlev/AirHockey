@@ -72,6 +72,9 @@ public class Paddle
             return;
         
         Shape.Position += movementDistance;
-
     }
+
+    public FloatRect GetGlobalBounds()
+        => Shape.GetGlobalBounds();
+        
 }

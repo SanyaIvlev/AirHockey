@@ -67,17 +67,19 @@ public class Puck
             _speedBoost += 1f;
         }
         
-        float shapeCenterX = Ball.Position.X + radius;
+        FloatRect boundsOfPuck = Ball.GetGlobalBounds();
+        FloatRect boundsOfRightPaddle = _rightPaddle.GetGlobalBounds();
+        FloatRect boundsOfLeftPaddle = _leftPaddle.GetGlobalBounds();
         
-        float leftPuckBorder = shapeCenterX - radius;
-        float rightPuckBorder = shapeCenterX + radius;
-
-        if ((upperPuckBorder >= _rightPaddle.UpLeftPosition.Y && lowerPuckBorder <= _rightPaddle.DownRightPosition.Y && rightPuckBorder >= _rightPaddle.UpLeftPosition.X)
-            || (upperPuckBorder >= _leftPaddle.UpLeftPosition.Y && lowerPuckBorder <= _leftPaddle.DownRightPosition.Y && leftPuckBorder <= _leftPaddle.DownRightPosition.X))
+        
+        if (boundsOfPuck.Intersects(boundsOfRightPaddle) ||
+            boundsOfPuck.Intersects(boundsOfLeftPaddle))
         {
             _direction = new Vector2f(-_direction.X, _direction.Y);
             _speedBoost += 1f;
         }
+
+
     }
 
     private Vector2f GetRandomDirection()
