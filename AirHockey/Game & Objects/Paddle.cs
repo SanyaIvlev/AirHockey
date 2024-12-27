@@ -6,7 +6,7 @@ namespace Aerohockey;
 
 public class Paddle
 {
-    public RectangleShape Shape { get; private set; }
+    public RectangleShape Figure { get; private set; }
 
     private float _direction;
     
@@ -22,8 +22,8 @@ public class Paddle
         
         _windowSize = windowSize;
 
-        Shape = new(new Vector2f(5, 100));
-        Shape.FillColor = fillColor;
+        Figure = new(new Vector2f(5, 100));
+        Figure.FillColor = fillColor;
 
         int x;
         
@@ -32,12 +32,12 @@ public class Paddle
         else
             x = 200;
         
-        Shape.Position = new Vector2f(x, (int)_windowSize.Y / 2f);
+        Figure.Position = new Vector2f(x, (int)_windowSize.Y / 2f);
     }
 
     public void Reset()
     {
-        Shape.Position = new Vector2f(Shape.Position.X, (int)_windowSize.Y / 2f);
+        Figure.Position = new Vector2f(Figure.Position.X, (int)_windowSize.Y / 2f);
     }
     
     public void ProcessInput()
@@ -58,8 +58,8 @@ public class Paddle
     {
         Vector2f movementDistance = new Vector2f(0, _direction);
 
-        float halfOfPaddleY = Shape.Size.Y / 2;
-        float nextCenterPositionY = Shape.Position.Y + movementDistance.Y + halfOfPaddleY;
+        float halfOfPaddleY = Figure.Size.Y / 2;
+        float nextCenterPositionY = Figure.Position.Y + movementDistance.Y + halfOfPaddleY;
 
         float DownPosition = nextCenterPositionY + halfOfPaddleY;
         float UpPosition = nextCenterPositionY - halfOfPaddleY;
@@ -67,10 +67,10 @@ public class Paddle
         if (DownPosition >= _windowSize.Y || UpPosition <= 0)
             return;
         
-        Shape.Position += movementDistance;
+        Figure.Position += movementDistance;
     }
 
     public FloatRect GetGlobalBounds()
-        => Shape.GetGlobalBounds();
+        => Figure.GetGlobalBounds();
         
 }

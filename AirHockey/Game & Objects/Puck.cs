@@ -5,10 +5,10 @@ namespace Aerohockey;
 
 public class Puck
 {
-    public float LeftPosition => Ball.Position.X;
-    public float RightPosition => Ball.Position.X + Ball.Radius * 2;
+    public float LeftPosition => Figure.Position.X;
+    public float RightPosition => Figure.Position.X + Figure.Radius * 2;
     
-    public CircleShape Ball;
+    public CircleShape Figure;
 
     private Paddle _rightPaddle;
     private Paddle _leftPaddle;
@@ -21,32 +21,34 @@ public class Puck
     private Vector2u _windowSize;
     
     private Clock _clock;
+    private Random _random;
 
 
     public Puck(Paddle rightPaddle, Paddle leftPaddle, Vector2u windowSize)
     {
-        Ball = new CircleShape(10);
+        Figure = new (10);
         _clock = new(); 
-        
-        _boostPerOneBounce = 10.0f;
         
         _windowSize = windowSize;
         
-        Ball.Position = new Vector2f(_windowSize.X / 2f, _windowSize.Y / 2f);
+        Figure.Position = new Vector2f(_windowSize.X / 2f, _windowSize.Y / 2f);
         
         _rightPaddle = rightPaddle;
         _leftPaddle = leftPaddle;
         
         _speedBoost = 500f;
+        _boostPerOneBounce = 10.0f;
         
         _clock.Restart();
+
+        _random = new();
         
         _direction = GetRandomDirection();
     }
     
     public void Reset()
     {
-        Ball.Position = new Vector2f(_windowSize.X / 2f, _windowSize.Y / 2f);
+        Figure.Position = new Vector2f(_windowSize.X / 2f, _windowSize.Y / 2f);
         _direction = GetRandomDirection();
         _speedBoost = 500f;
     }
@@ -59,14 +61,14 @@ public class Puck
         
         Vector2f currentDirection = _direction * _speedBoost * deltaTime;
         
-        Ball.Position += currentDirection;
+        Figure.Position += currentDirection;
         _clock.Restart();
     }
 
     private void TryBounce()
     {
-        float radius = Ball.Radius;
-        float shapeCenterY = Ball.Position.Y + radius;
+        float radius = Figure.Radius;
+        float shapeCenterY = Figure.Position.Y + radius;
 
         float upperPuckBorder = shapeCenterY - radius;
         float lowerPuckBorder = shapeCenterY + radius;
@@ -78,7 +80,7 @@ public class Puck
             _speedBoost += _boostPerOneBounce;
         }
         
-        FloatRect boundsOfPuck = Ball.GetGlobalBounds();
+        FloatRect boundsOfPuck = Figure.GetGlobalBounds();
         FloatRect boundsOfRightPaddle = _rightPaddle.GetGlobalBounds();
         FloatRect boundsOfLeftPaddle = _leftPaddle.GetGlobalBounds();
         
@@ -95,10 +97,8 @@ public class Puck
 
     private Vector2f GetRandomDirection()
     {
-        var random = new Random();
-        
-        float x = (float)random.NextDouble();
-        float y = (float)random.NextDouble();
+        float x = (float)_random.NextDouble();
+        float y = (float)_random.NextDouble();
         
         x = GetRandomState() ? x : -x;
         y = GetRandomState() ? y : -y;
@@ -107,9 +107,5 @@ public class Puck
     }
 
     private bool GetRandomState()
-    {
-        var random = new Random();
-        
-        return random.Next(0, 2) == 0;
-    }
+        => _random.Next(0, 2) == 0;
 }

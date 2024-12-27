@@ -133,9 +133,9 @@ public class Game
         
         _window.Draw(_victoryText);
 
-        Shape firstPaddle = _leftPaddle.Shape;
-        Shape secondPaddle = _rightPaddle.Shape;
-        Shape puck = _puck.Ball;
+        Shape firstPaddle = _leftPaddle.Figure;
+        Shape secondPaddle = _rightPaddle.Figure;
+        Shape puck = _puck.Figure;
         
         _window.Draw(firstPaddle);
         _window.Draw(secondPaddle);
