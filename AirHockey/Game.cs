@@ -1,33 +1,75 @@
 using System.Diagnostics;
 using SFML.Graphics;
+using SFML.System;
 using SFML.Window;
 
 namespace Aerohockey;
 
 public class Game
 {
-    public const int WIDTH = 1600;
-    public const int HEIGHT = 900;
+    private const int WIDTH = 1600;
+    private const int HEIGHT = 900;
     
     private RenderWindow _window;
+    
+    private Text _victoryText;
 
-    private Paddle _paddle1;
-    private Paddle _paddle2;
+    private Paddle _leftPaddle;
+    private uint _leftPaddleScore;
+    
+    private Paddle _rightPaddle;
+    private uint _rightPaddleScore;
     
     private Puck _puck;
-    
-    
+    private string _fontName;
+
+
     public void Start()
+    {
+        SetWindow();
+
+        SetText();
+
+        ResetGameObjects();
+
+        Run();
+    }
+
+    private void SetWindow()
     {
         _window = new RenderWindow(new VideoMode(WIDTH, HEIGHT), "Aerohockey");
         _window.Closed += WindowClosed;
+    }
+
+    private void SetText()
+    {
+        _fontName = "Obelix Pro.ttf";
+        Font font = new (GetFontLocation());
         
-        _paddle1 = new(Keyboard.Key.Up, Keyboard.Key.Down, Color.Blue,  false);
-        _paddle2 = new(Keyboard.Key.W, Keyboard.Key.S, Color.Red, true);
+        _victoryText = new("", font)
+        {
+            CharacterSize = 25,
+            FillColor = Color.Yellow,
+            Position = new Vector2f(0,0),
+        };
+    }
+    
+    private string GetFontLocation()
+    {
+        string currentDirectory = Directory.GetCurrentDirectory();
+        var debugFolder = Directory.GetParent(currentDirectory);
+        var binFolder = Directory.GetParent(debugFolder.FullName);
+        var projectFolder = Directory.GetParent(binFolder.FullName);
         
-        _puck = new Puck(_paddle2, _paddle1);
+        return Path.GetFullPath(projectFolder.FullName + "/" + _fontName);
+    }
+
+    private void ResetGameObjects()
+    {
+        _leftPaddle = new(Keyboard.Key.Up, Keyboard.Key.Down, Color.Blue,  false, _window.Size);
+        _rightPaddle = new(Keyboard.Key.W, Keyboard.Key.S, Color.Red, true, _window.Size);
         
-        Run();
+        _puck = new Puck(_rightPaddle, _leftPaddle, _window.Size);
     }
 
     private void Run()
@@ -47,24 +89,46 @@ public class Game
     {
         _window.DispatchEvents();
         
-        _paddle1.ProcessInput();
-        _paddle2.ProcessInput();
+        _leftPaddle.ProcessInput();
+        _rightPaddle.ProcessInput();
     }
     
     private void Update()
     {
-        _paddle1.DoLogic();
-        _paddle2.DoLogic();
+        _rightPaddle.DoLogic();
+        _leftPaddle.DoLogic();
         
         _puck.DoLogic();
+        
+        CheckWinner();
+    }
+
+    private void CheckWinner()
+    {
+        if (_puck.LeftPosition <= 0)
+        {
+            _rightPaddleScore++;
+            ResetGameObjects();
+        }
+        else if (_puck.RightPosition >= WIDTH)
+        {
+            _leftPaddleScore++;
+            ResetGameObjects();
+        }
+
+        _victoryText.DisplayedString = _leftPaddleScore + " : " + _rightPaddleScore;
+        
+        _victoryText.Position = new Vector2f(WIDTH / 2f - _victoryText.Scale.X / 2f, 0 + _victoryText.Scale.Y);
     }
 
     private void Render()
     {
         _window.Clear(Color.Black);
+        
+        _window.Draw(_victoryText);
 
-        Shape firstPaddle = _paddle1.Shape;
-        Shape secondPaddle = _paddle2.Shape;
+        Shape firstPaddle = _leftPaddle.Shape;
+        Shape secondPaddle = _rightPaddle.Shape;
         Shape puck = _puck.Ball;
         
         _window.Draw(firstPaddle);

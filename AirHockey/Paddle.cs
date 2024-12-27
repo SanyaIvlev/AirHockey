@@ -8,7 +8,6 @@ namespace Aerohockey;
 
 public class Paddle
 {
-    public Vector2f Position => Shape.Position;
     public Vector2f DownRightPosition { get; private set; }
     public Vector2f UpLeftPosition { get; private set; }
 
@@ -18,23 +17,28 @@ public class Paddle
     
     private Keyboard.Key _upMovementButton; 
     private Keyboard.Key _downMovementButton;
+
+    private Vector2u _windowSize;
     
-    public Paddle(Keyboard.Key upMovement, Keyboard.Key downMovement, Color fillColor, bool isRight)
+    public Paddle(Keyboard.Key upMovement, Keyboard.Key downMovement, Color fillColor, bool isRight, Vector2u windowSize)
     {
         _upMovementButton = upMovement;
         _downMovementButton = downMovement;
+        
+        _windowSize = windowSize;
 
-        Shape = new(new Vector2f(30, 100));
+        Shape = new(new Vector2f(5, 100));
         Shape.FillColor = fillColor;
 
         int x;
         
         if (isRight)
-            x = Game.WIDTH - 200; 
+            x = (int)_windowSize.X - 200; 
         else
             x = 200;
         
-        Shape.Position = new Vector2f(x, Game.HEIGHT / 2f);
+        Shape.Position = new Vector2f(x, (int)_windowSize.Y / 2f);
+        
     }
     
     public void ProcessInput()
@@ -64,7 +68,7 @@ public class Paddle
         DownRightPosition = new Vector2f(centerPositionX + halfOfPaddleX, nextCenterPositionY + halfOfPaddleY);
         UpLeftPosition = new Vector2f(centerPositionX - halfOfPaddleX, nextCenterPositionY - halfOfPaddleY);
 
-        if (DownRightPosition.Y >= Game.HEIGHT || UpLeftPosition.Y <= 0)
+        if (DownRightPosition.Y >= _windowSize.Y || UpLeftPosition.Y <= 0)
             return;
         
         Shape.Position += movementDistance;

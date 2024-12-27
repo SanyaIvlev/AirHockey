@@ -5,9 +5,13 @@ namespace Aerohockey;
 
 public class Puck
 {
+    public float LeftPosition => Ball.Position.X;
+    public float RightPosition => Ball.Position.X + Ball.Radius * 2;
+    
     public CircleShape Ball;
 
     private Paddle _rightPaddle;
+    
     private Paddle _leftPaddle;
 
     private float _speedBoost;
@@ -16,12 +20,16 @@ public class Puck
 
     private Clock _clock;
 
-    public Puck(Paddle rightPaddle, Paddle leftPaddle)
+    private Vector2u _windowSize;
+
+    public Puck(Paddle rightPaddle, Paddle leftPaddle, Vector2u windowSize)
     {
         Ball = new CircleShape(10);
         _clock = new(); 
         
-        Ball.Position = new Vector2f(Game.WIDTH / 2f, Game.HEIGHT / 2f);
+        _windowSize = windowSize;
+        
+        Ball.Position = new Vector2f(_windowSize.X / 2f, _windowSize.Y / 2f);
         
         _rightPaddle = rightPaddle;
         _leftPaddle = leftPaddle;
@@ -53,7 +61,7 @@ public class Puck
         float upperPuckBorder = shapeCenterY - radius;
         float lowerPuckBorder = shapeCenterY + radius;
         
-        if (upperPuckBorder <= 0 || lowerPuckBorder >= Game.HEIGHT)
+        if (upperPuckBorder <= 0 || lowerPuckBorder >= _windowSize.Y)
         {
             _direction = new Vector2f(_direction.X, -_direction.Y);
             _speedBoost += 1f;
