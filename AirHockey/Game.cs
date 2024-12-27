@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
@@ -30,7 +29,7 @@ public class Game
 
         SetText();
 
-        ResetGameObjects();
+        CreateGameObjects();
 
         Run();
     }
@@ -64,7 +63,7 @@ public class Game
         return Path.GetFullPath(projectFolder.FullName + "/" + _fontName);
     }
 
-    private void ResetGameObjects()
+    private void CreateGameObjects()
     {
         _leftPaddle = new(Keyboard.Key.Up, Keyboard.Key.Down, Color.Blue,  false, _window.Size);
         _rightPaddle = new(Keyboard.Key.W, Keyboard.Key.S, Color.Red, true, _window.Size);
@@ -120,7 +119,14 @@ public class Game
         
         _victoryText.Position = new Vector2f(WIDTH / 2f - _victoryText.Scale.X / 2f, 0 + _victoryText.Scale.Y);
     }
-
+    
+    private void ResetGameObjects()
+    {
+        _leftPaddle.Reset();
+        _rightPaddle.Reset();
+        _puck.Reset();
+    }
+    
     private void Render()
     {
         _window.Clear(Color.Black);

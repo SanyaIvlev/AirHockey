@@ -11,21 +11,24 @@ public class Puck
     public CircleShape Ball;
 
     private Paddle _rightPaddle;
-    
     private Paddle _leftPaddle;
 
     private float _speedBoost;
+    private float _boostPerOneBounce;
     
     private Vector2f _direction;
 
+    private Vector2u _windowSize;
+    
     private Clock _clock;
 
-    private Vector2u _windowSize;
 
     public Puck(Paddle rightPaddle, Paddle leftPaddle, Vector2u windowSize)
     {
         Ball = new CircleShape(10);
         _clock = new(); 
+        
+        _boostPerOneBounce = 10.0f;
         
         _windowSize = windowSize;
         
@@ -39,6 +42,13 @@ public class Puck
         _clock.Restart();
         
         _direction = GetRandomDirection();
+    }
+    
+    public void Reset()
+    {
+        Ball.Position = new Vector2f(_windowSize.X / 2f, _windowSize.Y / 2f);
+        _direction = GetRandomDirection();
+        _speedBoost = 500f;
     }
 
     public void DoLogic()
@@ -61,10 +71,11 @@ public class Puck
         float upperPuckBorder = shapeCenterY - radius;
         float lowerPuckBorder = shapeCenterY + radius;
         
-        if (upperPuckBorder <= 0 || lowerPuckBorder >= _windowSize.Y)
+        if ((upperPuckBorder <= 0 && _direction.Y < 0)
+            || (lowerPuckBorder >= _windowSize.Y && _direction.Y > 0))
         {
             _direction = new Vector2f(_direction.X, -_direction.Y);
-            _speedBoost += 1f;
+            _speedBoost += _boostPerOneBounce;
         }
         
         FloatRect boundsOfPuck = Ball.GetGlobalBounds();
@@ -72,11 +83,11 @@ public class Puck
         FloatRect boundsOfLeftPaddle = _leftPaddle.GetGlobalBounds();
         
         
-        if (boundsOfPuck.Intersects(boundsOfRightPaddle) ||
-            boundsOfPuck.Intersects(boundsOfLeftPaddle))
+        if ((boundsOfPuck.Intersects(boundsOfRightPaddle) && _direction.X > 0)
+            || (boundsOfPuck.Intersects(boundsOfLeftPaddle) && _direction.X < 0))
         {
             _direction = new Vector2f(-_direction.X, _direction.Y);
-            _speedBoost += 1f;
+            _speedBoost += _boostPerOneBounce;
         }
 
 
