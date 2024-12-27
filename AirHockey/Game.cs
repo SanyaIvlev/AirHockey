@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using SFML.Graphics;
 using SFML.Window;
 
@@ -13,14 +14,18 @@ public class Game
     private Paddle _paddle1;
     private Paddle _paddle2;
     
+    private Puck _puck;
+    
     
     public void Start()
     {
         _window = new RenderWindow(new VideoMode(WIDTH, HEIGHT), "Aerohockey");
         _window.Closed += WindowClosed;
         
-        _paddle1 = new(Keyboard.Key.Up, Keyboard.Key.Down, false);
-        _paddle2 = new(Keyboard.Key.W, Keyboard.Key.S, true);
+        _paddle1 = new(Keyboard.Key.Up, Keyboard.Key.Down, Color.Blue,  false);
+        _paddle2 = new(Keyboard.Key.W, Keyboard.Key.S, Color.Red, true);
+        
+        _puck = new Puck(_paddle2, _paddle1);
         
         Run();
     }
@@ -50,6 +55,8 @@ public class Game
     {
         _paddle1.DoLogic();
         _paddle2.DoLogic();
+        
+        _puck.DoLogic();
     }
 
     private void Render()
@@ -58,9 +65,11 @@ public class Game
 
         Shape firstPaddle = _paddle1.Shape;
         Shape secondPaddle = _paddle2.Shape;
+        Shape puck = _puck.Ball;
         
         _window.Draw(firstPaddle);
         _window.Draw(secondPaddle);
+        _window.Draw(puck);
         
         _window.Display();
     }
