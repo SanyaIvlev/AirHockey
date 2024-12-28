@@ -4,10 +4,13 @@ using SFML.Window;
 
 namespace Aerohockey;
 
-public class Paddle
+public class PaddleController
 {
-    public RectangleShape Figure { get; private set; }
+    public Vector2f Position { get; private set; }
+    private Vector2f _defaultPosition;
 
+    private Vector2f _size;
+    
     private float _direction;
     
     private Keyboard.Key _upMovementButton; 
@@ -15,29 +18,22 @@ public class Paddle
 
     private Vector2u _windowSize;
     
-    public Paddle(Keyboard.Key upMovement, Keyboard.Key downMovement, Color fillColor, bool isRight, Vector2u windowSize)
+    public PaddleController(Keyboard.Key upMovement, Keyboard.Key downMovement, Vector2u windowSize, Vector2f defaultPosition, Vector2f paddleSize)
     {
+        _defaultPosition = defaultPosition;
+        Position = _defaultPosition;
+        
         _upMovementButton = upMovement;
         _downMovementButton = downMovement;
         
+        _size = paddleSize;
+        
         _windowSize = windowSize;
-
-        Figure = new(new Vector2f(5, 100));
-        Figure.FillColor = fillColor;
-
-        int x;
-        
-        if (isRight)
-            x = (int)_windowSize.X - 200; 
-        else
-            x = 200;
-        
-        Figure.Position = new Vector2f(x, (int)_windowSize.Y / 2f);
     }
 
     public void Reset()
     {
-        Figure.Position = new Vector2f(Figure.Position.X, (int)_windowSize.Y / 2f);
+        Position = _defaultPosition;
     }
     
     public void ProcessInput()
@@ -58,8 +54,8 @@ public class Paddle
     {
         Vector2f movementDistance = new Vector2f(0, _direction);
 
-        float halfOfPaddleY = Figure.Size.Y / 2;
-        float nextCenterPositionY = Figure.Position.Y + movementDistance.Y + halfOfPaddleY;
+        float halfOfPaddleY = _size.Y / 2;
+        float nextCenterPositionY = Position.Y + movementDistance.Y + halfOfPaddleY;
 
         float DownPosition = nextCenterPositionY + halfOfPaddleY;
         float UpPosition = nextCenterPositionY - halfOfPaddleY;
@@ -67,10 +63,7 @@ public class Paddle
         if (DownPosition >= _windowSize.Y || UpPosition <= 0)
             return;
         
-        Figure.Position += movementDistance;
+        Position += movementDistance;
     }
-
-    public FloatRect GetGlobalBounds()
-        => Figure.GetGlobalBounds();
         
 }

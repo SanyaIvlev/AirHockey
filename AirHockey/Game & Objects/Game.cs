@@ -13,11 +13,8 @@ public class Game
     
     private Text _victoryText;
 
-    private Paddle _leftPaddle;
-    private uint _leftPaddleScore;
-    
-    private Paddle _rightPaddle;
-    private uint _rightPaddleScore;
+    private Player _leftPaddle;
+    private Player _rightPaddle;
     
     private Puck _puck;
     private string _fontName;
@@ -106,16 +103,16 @@ public class Game
     {
         if (_puck.LeftPosition <= 0)
         {
-            _rightPaddleScore++;
+            _rightPaddle.UpdateScore();
             ResetGameObjects();
         }
         else if (_puck.RightPosition >= WIDTH)
         {
-            _leftPaddleScore++;
+            _leftPaddle.UpdateScore();
             ResetGameObjects();
         }
 
-        _victoryText.DisplayedString = _leftPaddleScore + " : " + _rightPaddleScore;
+        _victoryText.DisplayedString = _leftPaddle.Score + " : " + _rightPaddle.Score;
         
         _victoryText.Position = new Vector2f(WIDTH / 2f - _victoryText.Scale.X / 2f, 0 + _victoryText.Scale.Y);
     }
@@ -133,8 +130,8 @@ public class Game
         
         _window.Draw(_victoryText);
 
-        Shape firstPaddle = _leftPaddle.Figure;
-        Shape secondPaddle = _rightPaddle.Figure;
+        Shape firstPaddle = _leftPaddle.Paddle;
+        Shape secondPaddle = _rightPaddle.Paddle;
         Shape puck = _puck.Figure;
         
         _window.Draw(firstPaddle);

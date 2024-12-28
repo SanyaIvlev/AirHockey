@@ -10,8 +10,8 @@ public class Puck
     
     public CircleShape Figure;
 
-    private Paddle _rightPaddle;
-    private Paddle _leftPaddle;
+    private Player _rightPaddle;
+    private Player _leftPaddle;
 
     private float _defaultSpeedBoost;
     private float _currentSpeedBoost;
@@ -25,7 +25,7 @@ public class Puck
     private Random _random;
 
 
-    public Puck(Paddle rightPaddle, Paddle leftPaddle, Vector2u windowSize)
+    public Puck(Player rightPaddle, Player leftPaddle, Vector2u windowSize)
     {
         Figure = new (10);
         _clock = new(); 
