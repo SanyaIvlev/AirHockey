@@ -13,7 +13,8 @@ public class Puck
     private Paddle _rightPaddle;
     private Paddle _leftPaddle;
 
-    private float _speedBoost;
+    private float _defaultSpeedBoost;
+    private float _currentSpeedBoost;
     private float _boostPerOneBounce;
     
     private Vector2f _direction;
@@ -35,8 +36,9 @@ public class Puck
         
         _rightPaddle = rightPaddle;
         _leftPaddle = leftPaddle;
-        
-        _speedBoost = 500f;
+
+        _defaultSpeedBoost = 500f;
+        _currentSpeedBoost = _defaultSpeedBoost;
         _boostPerOneBounce = 10.0f;
         
         _clock.Restart();
@@ -50,7 +52,7 @@ public class Puck
     {
         Figure.Position = new Vector2f(_windowSize.X / 2f, _windowSize.Y / 2f);
         _direction = GetRandomDirection();
-        _speedBoost = 500f;
+        _currentSpeedBoost = _defaultSpeedBoost;
     }
 
     public void DoLogic()
@@ -59,7 +61,7 @@ public class Puck
         
         float deltaTime = _clock.ElapsedTime.AsSeconds();
         
-        Vector2f currentDirection = _direction * _speedBoost * deltaTime;
+        Vector2f currentDirection = _direction * _currentSpeedBoost * deltaTime;
         
         Figure.Position += currentDirection;
         _clock.Restart();
@@ -77,7 +79,7 @@ public class Puck
             || (lowerPuckBorder >= _windowSize.Y && _direction.Y > 0))
         {
             _direction = new Vector2f(_direction.X, -_direction.Y);
-            _speedBoost += _boostPerOneBounce;
+            _currentSpeedBoost += _boostPerOneBounce;
         }
         
         FloatRect boundsOfPuck = Figure.GetGlobalBounds();
@@ -89,7 +91,7 @@ public class Puck
             || (boundsOfPuck.Intersects(boundsOfLeftPaddle) && _direction.X < 0))
         {
             _direction = new Vector2f(-_direction.X, _direction.Y);
-            _speedBoost += _boostPerOneBounce;
+            _currentSpeedBoost += _boostPerOneBounce;
         }
 
 
@@ -103,9 +105,22 @@ public class Puck
         x = GetRandomState() ? x : -x;
         y = GetRandomState() ? y : -y;
         
-        return new Vector2f(x, y);
+        Vector2f normalizedDirection = NormalizeVector(new(x, y));
+        
+        return normalizedDirection;
     }
 
     private bool GetRandomState()
         => _random.Next(0, 2) == 0;
+    
+    private Vector2f NormalizeVector(Vector2f vector)
+    {
+        float vectorLength = (float)Math.Sqrt(vector.X * vector.X + vector.Y * vector.Y);
+        float inversedLength = (1 / vectorLength);
+        
+        vector *= inversedLength;
+
+        return vector;
+    }
+
 }
