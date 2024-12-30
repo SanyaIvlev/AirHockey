@@ -101,12 +101,12 @@ public class Game
 
     private void CheckWinner()
     {
-        if (_puck.LeftPosition <= 0)
+        if (_puck.Radius >= _puck.LeftBorderDistanceX)
         {
             _rightPaddle.UpdateScore();
             ResetGameObjects();
         }
-        else if (_puck.RightPosition >= WIDTH)
+        else if (_puck.Radius >= _puck.RightBorderDistanceX)
         {
             _leftPaddle.UpdateScore();
             ResetGameObjects();

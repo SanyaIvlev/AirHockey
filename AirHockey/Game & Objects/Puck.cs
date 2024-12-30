@@ -1,3 +1,4 @@
+using AirHockey.Extensions;
 using SFML.Graphics;
 using SFML.System;
 
@@ -5,8 +6,10 @@ namespace Aerohockey;
 
 public class Puck
 {
-    public float LeftPosition => Figure.Position.X;
-    public float RightPosition => Figure.Position.X + Figure.Radius * 2;
+    
+    public float Radius => Figure.Radius;
+    public float LeftBorderDistanceX => Figure.Position.X + Radius;
+    public float RightBorderDistanceX => _windowSize.X - (Figure.Position.X + 2 * Radius);
     
     public CircleShape Figure;
 
@@ -70,13 +73,13 @@ public class Puck
     private void TryBounce()
     {
         float radius = Figure.Radius;
-        float shapeCenterY = Figure.Position.Y + radius;
-
-        float upperPuckBorder = shapeCenterY - radius;
-        float lowerPuckBorder = shapeCenterY + radius;
+        float centerY = Figure.Position.Y + radius;
         
-        if ((upperPuckBorder <= 0 && _direction.Y < 0)
-            || (lowerPuckBorder >= _windowSize.Y && _direction.Y > 0))
+        float UpBorderDistanceY = centerY;
+        float DownBorderDistanceY = _windowSize.Y - centerY;
+        
+        if ((radius >= UpBorderDistanceY && _direction.Y < 0)
+            || (radius >= DownBorderDistanceY && _direction.Y > 0))
         {
             _direction = new Vector2f(_direction.X, -_direction.Y);
             _currentSpeedBoost += _boostPerOneBounce;
@@ -93,8 +96,6 @@ public class Puck
             _direction = new Vector2f(-_direction.X, _direction.Y);
             _currentSpeedBoost += _boostPerOneBounce;
         }
-
-
     }
 
     private Vector2f GetRandomDirection()
@@ -105,22 +106,12 @@ public class Puck
         x = GetRandomState() ? x : -x;
         y = GetRandomState() ? y : -y;
         
-        Vector2f normalizedDirection = NormalizeVector(new(x, y));
+        Vector2f direction = new(x, y);
+        var normalizedDirection = direction.Normalize();
         
         return normalizedDirection;
     }
 
     private bool GetRandomState()
         => _random.Next(0, 2) == 0;
-    
-    private Vector2f NormalizeVector(Vector2f vector)
-    {
-        float vectorLength = (float)Math.Sqrt(vector.X * vector.X + vector.Y * vector.Y);
-        float inversedLength = (1 / vectorLength);
-        
-        vector *= inversedLength;
-
-        return vector;
-    }
-
 }
