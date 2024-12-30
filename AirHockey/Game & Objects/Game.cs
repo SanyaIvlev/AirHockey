@@ -17,8 +17,6 @@ public class Game
     private Player _rightPaddle;
     
     private Puck _puck;
-    private string _fontName;
-
 
     public void Start()
     {
@@ -39,8 +37,8 @@ public class Game
 
     private void SetText()
     {
-        _fontName = "Obelix Pro.ttf";
-        Font font = new (GetFontLocation());
+        string fontName = "Obelix Pro.ttf";
+        Font font = new (GetFontLocation(fontName));
         
         _victoryText = new("", font)
         {
@@ -50,20 +48,15 @@ public class Game
         };
     }
     
-    private string GetFontLocation()
+    private string GetFontLocation(string fontName)
     {
-        string currentDirectory = Directory.GetCurrentDirectory();
-        var debugFolder = Directory.GetParent(currentDirectory);
-        var binFolder = Directory.GetParent(debugFolder.FullName);
-        var projectFolder = Directory.GetParent(binFolder.FullName);
-        
-        return Path.GetFullPath(projectFolder.FullName + "/" + _fontName);
+        return Path.GetFullPath("..\\..\\..\\..\\Resources\\Fonts\\" + fontName);
     }
 
     private void CreateGameObjects()
     {
-        _leftPaddle = new(Keyboard.Key.Up, Keyboard.Key.Down, Color.Blue,  false, _window.Size);
-        _rightPaddle = new(Keyboard.Key.W, Keyboard.Key.S, Color.Red, true, _window.Size);
+        _leftPaddle = new(Keyboard.Key.W, Keyboard.Key.S, Color.Blue,  false, _window.Size);
+        _rightPaddle = new(Keyboard.Key.Up, Keyboard.Key.Down, Color.Red, true, _window.Size);
         
         _puck = new Puck(_rightPaddle, _leftPaddle, _window.Size);
     }
