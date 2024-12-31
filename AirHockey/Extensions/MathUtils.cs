@@ -2,7 +2,7 @@ using SFML.System;
 
 namespace AirHockey.Extensions;
 
-static class Vector2fExtension
+static class MathUtils
 {
     public static Vector2f Normalize(this Vector2f vector)
     {

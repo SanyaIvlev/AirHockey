@@ -50,7 +50,7 @@ public class PaddleController
         }
     }
 
-    public void DoLogic()
+    public void TryMove()
     {
         Vector2f movementDistance = new Vector2f(0, _direction);
 

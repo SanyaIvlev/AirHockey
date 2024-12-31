@@ -78,8 +78,11 @@ public class Game
     {
         _window.DispatchEvents();
         
-        _leftPaddle.ProcessInput();
-        _rightPaddle.ProcessInput();
+        PaddleController leftPaddleController = _leftPaddle.Controller;
+        PaddleController rightPaddleController = _rightPaddle.Controller;
+        
+        leftPaddleController.ProcessInput();
+        rightPaddleController.ProcessInput();
     }
     
     private void Update()

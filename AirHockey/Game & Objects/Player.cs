@@ -8,9 +8,9 @@ public class Player
 {
     public uint Score { get; private set; }
 
-    public RectangleShape Paddle;
+    public PaddleController Controller;
     
-    private PaddleController _controller;
+    public RectangleShape Paddle;
     
     private Vector2f _defaultPosition;
 
@@ -31,24 +31,19 @@ public class Player
         
         _defaultPosition = Paddle.Position;
         
-        _controller = new(upMovement, downMovement, windowSize, _defaultPosition, Paddle.Size);
+        Controller = new(upMovement, downMovement, windowSize, _defaultPosition, Paddle.Size);
     }
     
     public void Reset()
     {
         Paddle.Position = _defaultPosition;
-        _controller.Reset();
-    }
-
-    public void ProcessInput()
-    {
-        _controller.ProcessInput();
+        Controller.Reset();
     }
 
     public void DoLogic()
     {
-        _controller.DoLogic();
-        Paddle.Position = _controller.Position;
+        Controller.TryMove();
+        Paddle.Position = Controller.Position;
     }
     
     public FloatRect GetGlobalBounds()
