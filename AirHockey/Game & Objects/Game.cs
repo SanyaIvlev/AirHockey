@@ -6,6 +6,9 @@ namespace Aerohockey;
 
 public class Game
 {
+    private const int TARGET_FPS = 60;
+    private const long TIME_BEFORE_NEXT_FRAME = 1000 * 1000 / TARGET_FPS;
+    
     private const int WIDTH = 1600;
     private const int HEIGHT = 900;
     
@@ -63,11 +66,31 @@ public class Game
 
     private void Run()
     {
+        long totalTimeBeforeUpdate = 0;
+        long previousTimeElapsed = 0;
+        long deltaTime = 0;
+        long totalTimeElapsed = 0;
+        
+        Clock clock = new Clock();
+        
         while (DoesGameContinue())
         {
             ProcessInput();
-            Update();
-            Render();
+
+            totalTimeElapsed = clock.ElapsedTime.AsMicroseconds();
+            deltaTime = totalTimeElapsed - previousTimeElapsed;
+            previousTimeElapsed = totalTimeElapsed;
+            
+            totalTimeBeforeUpdate += deltaTime;
+            
+
+            if (totalTimeBeforeUpdate >= TIME_BEFORE_NEXT_FRAME)
+            {
+                clock.Restart();
+                
+                Update();
+                Render();
+            }
         }
     }
 
