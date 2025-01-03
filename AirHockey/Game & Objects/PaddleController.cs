@@ -1,4 +1,3 @@
-using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
 
@@ -17,6 +16,8 @@ public class PaddleController
     private Keyboard.Key _downMovementButton;
 
     private Vector2u _windowSize;
+
+    private Clock _clock;
     
     public PaddleController(Keyboard.Key upMovement, Keyboard.Key downMovement, Vector2u windowSize, Vector2f defaultPosition, Vector2f paddleSize)
     {
@@ -29,6 +30,8 @@ public class PaddleController
         _size = paddleSize;
         
         _windowSize = windowSize;
+        
+        _clock = new Clock();
     }
 
     public void Reset()
@@ -52,7 +55,9 @@ public class PaddleController
 
     public void TryMove()
     {
-        Vector2f movementDistance = new Vector2f(0, _direction);
+        float deltaTime = _clock.ElapsedTime.AsMilliseconds();
+        
+        Vector2f movementDistance = new Vector2f(0, _direction * deltaTime);
 
         float halfOfPaddleY = _size.Y / 2;
         float nextCenterPositionY = Position.Y + movementDistance.Y + halfOfPaddleY;
@@ -64,6 +69,8 @@ public class PaddleController
             return;
         
         Position += movementDistance;
+        
+        _clock.Restart();
     }
         
 }
