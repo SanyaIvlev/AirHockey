@@ -35,26 +35,23 @@ public class Puck
         
         _windowSize = windowSize;
         
-        Figure.Position = new Vector2f(_windowSize.X / 2f, _windowSize.Y / 2f);
-        
         _rightPaddle = rightPaddle;
         _leftPaddle = leftPaddle;
 
         _defaultSpeedBoost = 500f;
-        _currentSpeedBoost = _defaultSpeedBoost;
         _boostPerOneBounce = 10.0f;
         
         _clock.Restart();
 
         _random = new();
         
-        _direction = GetRandomDirection();
+        Reset();
     }
     
     public void Reset()
     {
         Figure.Position = new Vector2f(_windowSize.X / 2f, _windowSize.Y / 2f);
-        _direction = GetRandomDirection();
+        _direction = GetRandomDirection((0.5f, 0f), (1f, 0.5f));
         _currentSpeedBoost = _defaultSpeedBoost;
     }
 
@@ -98,10 +95,10 @@ public class Puck
         }
     }
 
-    private Vector2f GetRandomDirection()
+    private Vector2f GetRandomDirection((float x, float y) minimum, (float x, float y) maximum)
     {
-        float x = (float)_random.NextDouble();
-        float y = (float)_random.NextDouble();
+        float x = (float)_random.NextDouble() * (maximum.x - minimum.x) + minimum.x;
+        float y = (float)_random.NextDouble() * (maximum.y - minimum.y) + minimum.y;
         
         x = GetRandomState() ? x : -x;
         y = GetRandomState() ? y : -y;

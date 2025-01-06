@@ -7,8 +7,8 @@ namespace Aerohockey;
 public class Game
 {
     private const int TARGET_FPS = 60;
-    private const int SECOND_TO_A_MICROSECOND = 1000000;
-    private const long TIME_BEFORE_NEXT_FRAME = SECOND_TO_A_MICROSECOND / TARGET_FPS;
+    private const int SECOND_TO_MICROSECONDS = 1000000;
+    private const long TIME_BEFORE_NEXT_FRAME = SECOND_TO_MICROSECONDS / TARGET_FPS;
     
     private const int WIDTH = 1600;
     private const int HEIGHT = 900;
