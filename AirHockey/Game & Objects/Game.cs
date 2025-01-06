@@ -123,20 +123,24 @@ public class Game
     {
         if (_puck.Radius >= _puck.LeftBorderDistanceX)
         {
-            _rightPaddle.UpdateScore();
+            UpdateScore(_rightPaddle);
             ResetGameObjects();
         }
         else if (_puck.Radius >= _puck.RightBorderDistanceX)
         {
-            _leftPaddle.UpdateScore();
+            UpdateScore(_leftPaddle);
             ResetGameObjects();
         }
+    }
 
-        _victoryText.DisplayedString = _leftPaddle.Score + " : " + _rightPaddle.Score;
+    private void UpdateScore(Player player)
+    {
+        player.UpdateScore();
         
+        _victoryText.DisplayedString = _leftPaddle.Score + " : " + _rightPaddle.Score;
         _victoryText.Position = new Vector2f(WIDTH / 2f - _victoryText.Scale.X / 2f, 0 + _victoryText.Scale.Y);
     }
-    
+
     private void ResetGameObjects()
     {
         _leftPaddle.Reset();
