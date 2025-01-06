@@ -15,16 +15,20 @@ public class Game
     
     private RenderWindow _window;
     
-    private Text _victoryText;
-
     private Player _leftPaddle;
     private Player _rightPaddle;
     
     private Puck _puck;
+    
+    private Text _victoryText;
+    
+    private List<Drawable> _drawables;
 
     public void Start()
     {
         SetWindow();
+        
+        _drawables = new();
 
         SetText();
 
@@ -50,6 +54,11 @@ public class Game
             FillColor = Color.Yellow,
             Position = new Vector2f(0,0),
         };
+        
+        _victoryText.DisplayedString = 0 + " : " + 0;
+        _victoryText.Position = new Vector2f(WIDTH / 2f - _victoryText.Scale.X / 2f, 0 + _victoryText.Scale.Y);
+        
+        AddDrawables(_victoryText);
     }
     
     private string GetFontLocation(string fontName)
@@ -63,6 +72,19 @@ public class Game
         _rightPaddle = new(Keyboard.Key.Up, Keyboard.Key.Down, Color.Red, true, _window.Size);
         
         _puck = new Puck(_rightPaddle, _leftPaddle, _window.Size);
+        
+        AddDrawables(_leftPaddle.Paddle, _rightPaddle.Paddle, _puck.Figure);
+    }
+
+    private void AddDrawables(params Drawable[] newDrawables)
+    {
+        foreach (var drawable in newDrawables)
+        {
+            if (_drawables.Contains(drawable))
+                return;
+            
+            _drawables.Add(drawable);
+        }
     }
 
     private void Run()
@@ -151,16 +173,11 @@ public class Game
     private void Render()
     {
         _window.Clear(Color.Black);
-        
-        _window.Draw(_victoryText);
 
-        Shape firstPaddle = _leftPaddle.Paddle;
-        Shape secondPaddle = _rightPaddle.Paddle;
-        Shape puck = _puck.Figure;
-        
-        _window.Draw(firstPaddle);
-        _window.Draw(secondPaddle);
-        _window.Draw(puck);
+        foreach (var drawable in _drawables)
+        {
+            _window.Draw(drawable);
+        }
         
         _window.Display();
     }
